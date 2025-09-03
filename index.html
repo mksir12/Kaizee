@@ -1471,7 +1471,7 @@
     </div>
   </div>
 
-<div class="col-xl-4 col-md-6">
+  <div class="col-xl-4 col-md-6">
   <div class="card-group">
     <div class="card mb-0">
       <div class="card-body card-separator">
@@ -1479,13 +1479,12 @@
           <h5 class="m-0 me-2">Latest Usage</h5>
         </div>
         <div id="usage-content" class="pt-2">
-          <ul id="usage-list" class="p-0 m-0">
-          </ul>
+          <ul id="usage-list" class="p-0 m-0 list-unstyled"></ul>
         </div>
       </div>
     </div>
   </div>
-</div>
+  </div>
 
 <div class="col-xl-4 col-md-6">
   <div class="card-group">
@@ -1522,6 +1521,46 @@
     <div class="layout-overlay layout-menu-toggle"></div>
     <div class="drag-target"></div>
   </div>
+
+    <script>
+  async function loadUsage() {
+    try {
+      // 👉 Replace with your actual Worker URL
+      const res = await fetch("https://peace.<your-subdomain>.workers.dev");
+      const data = await res.json();
+
+      const usageList = document.getElementById("usage-list");
+      usageList.innerHTML = "";
+
+      data.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "mb-3 d-flex align-items-center";
+
+        li.innerHTML = `
+          <div class="me-2">
+            <span class="badge bg-success rounded-circle p-2">
+              ✔
+            </span>
+          </div>
+          <div class="flex-grow-1">
+            <strong>${item.name}</strong><br>
+            <small class="text-muted">📅 ${item.time}</small>
+          </div>
+          <div>
+            <span class="badge bg-light text-dark">${item.tag}</span>
+          </div>
+        `;
+
+        usageList.appendChild(li);
+      });
+    } catch (err) {
+      document.getElementById("usage-list").innerHTML =
+        "<li class='text-danger'>Error loading data</li>";
+    }
+  }
+
+  loadUsage();
+</script>
 
   <script src="js/jquery.js"></script>
   <script src="js/popper.js"></script>
