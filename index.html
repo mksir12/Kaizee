@@ -1526,7 +1526,7 @@
   async function loadUsage() {
     try {
       // 👉 Replace with your actual Worker URL
-      const res = await fetch("https://peace.<your-subdomain>.workers.dev");
+      const res = await fetch("https://jerrycoder.oggyapi.workers.dev/peace");
       const data = await res.json();
 
       const usageList = document.getElementById("usage-list");
