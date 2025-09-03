@@ -1484,7 +1484,7 @@
       </div>
     </div>
   </div>
-  </div>
+</div>
 
 <div class="col-xl-4 col-md-6">
   <div class="card-group">
@@ -1522,44 +1522,86 @@
     <div class="drag-target"></div>
   </div>
 
-    <script>
-  async function loadUsage() {
-    try {
-      // 👉 Replace with your actual Worker URL
-      const res = await fetch("https://jerrycoder.oggyapi.workers.dev/peace");
-      const data = await res.json();
+<style>
+/* === Custom Styles === */
+#usage-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+}
 
-      const usageList = document.getElementById("usage-list");
-      usageList.innerHTML = "";
+#usage-list .check-icon {
+  background: #e6f4ea;
+  color: #34a853;
+  font-size: 18px;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
 
-      data.forEach(item => {
-        const li = document.createElement("li");
-        li.className = "mb-3 d-flex align-items-center";
+#usage-list .details {
+  flex: 1;
+}
 
-        li.innerHTML = `
-          <div class="me-2">
-            <span class="badge bg-success rounded-circle p-2">
-              ✔
-            </span>
-          </div>
-          <div class="flex-grow-1">
-            <strong>${item.name}</strong><br>
-            <small class="text-muted">📅 ${item.time}</small>
-          </div>
-          <div>
-            <span class="badge bg-light text-dark">${item.tag}</span>
-          </div>
-        `;
+#usage-list .name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1a1a1a;
+}
 
-        usageList.appendChild(li);
-      });
-    } catch (err) {
-      document.getElementById("usage-list").innerHTML =
-        "<li class='text-danger'>Error loading data</li>";
-    }
+#usage-list .time {
+  display: block;
+  font-size: 13px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+#usage-list .tag {
+  background: #e6f4ea;
+  color: #34a853;
+  font-size: 13px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+</style>
+
+<script>
+async function loadUsage() {
+  try {
+    // 👉 Replace with your Worker endpoint
+    const res = await fetch("https://jerrycoder.oggyapi.workers.dev/peace");
+    const data = await res.json();
+
+    const usageList = document.getElementById("usage-list");
+    usageList.innerHTML = "";
+
+    data.forEach(item => {
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <div class="check-icon">✔</div>
+        <div class="details">
+          <span class="name">${item.name}</span>
+          <span class="time">📅 ${item.time}</span>
+        </div>
+        <div>
+          <span class="tag">${item.tag}</span>
+        </div>
+      `;
+      usageList.appendChild(li);
+    });
+  } catch (err) {
+    document.getElementById("usage-list").innerHTML =
+      "<li class='text-danger'>Error loading data</li>";
   }
+}
 
-  loadUsage();
+loadUsage();
 </script>
 
   <script src="js/jquery.js"></script>
