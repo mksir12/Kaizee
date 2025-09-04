@@ -777,7 +777,7 @@
 
 <!-- Hidden Search Bar -->
 <div id="searchBar" class="search-bar d-none">
-  <input type="text" id="searchInput" class="form-control" placeholder="Search API (e.g. peace, spotify, lost-part4)" />
+  <input type="text" id="searchInput" class="form-control" placeholder="Search API (e.g. peace, spotify)" />
   <ul id="searchResults" class="list-group mt-2"></ul>
 </div>
              <ul class="navbar-nav flex-row align-items-center ms-md-auto">
@@ -1158,7 +1158,7 @@
   position: absolute;
   top: 60px;
   right: 20px;
-  width: 350px;
+  width: 250px; /* smaller medium size */
   z-index: 1050;
   background: #fff;
   border: 1px solid #ddd;
@@ -1221,7 +1221,7 @@
 </style>
 
 <script>
-// Your API list (from jerry.html)
+// Your API list
 const apiList = [
   { name: "Peace", endpoint: "/peace" },
   { name: "Lost Part 4", endpoint: "/lost-part4" },
@@ -1267,22 +1267,18 @@ document.addEventListener("DOMContentLoaded", function() {
       const li = document.createElement("li");
       li.className = "list-group-item list-group-item-action";
       li.textContent = `${api.name} (${api.endpoint})`;
-      li.addEventListener("click", async () => {
-        resultsList.innerHTML = `<li class="list-group-item">Loading ${api.endpoint}...</li>`;
-        try {
-          const res = await fetch(api.endpoint);
-          const data = await res.json();
-          resultsList.innerHTML = `<li class="list-group-item"><pre>${JSON.stringify(data, null, 2)}</pre></li>`;
-        } catch (err) {
-          resultsList.innerHTML = `<li class="list-group-item text-danger">Error: ${err.message}</li>`;
-        }
+
+      // ✅ Redirect instead of fetch
+      li.addEventListener("click", () => {
+        window.location.href = api.endpoint;
       });
+
       resultsList.appendChild(li);
     });
   });
 });
-   </script> 
-  
+</script>
+    
 <script>
 // Function to create cut-cut gauge
 function createGauge(percentage) {
