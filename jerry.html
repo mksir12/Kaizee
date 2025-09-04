@@ -1192,47 +1192,62 @@
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
 <script>
-  var options = {
-    series: [97.86], // Percentage value
-    chart: {
-      height: 250,
-      type: 'radialBar',
-    },
-    plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        hollow: {
-          size: '60%',
-        },
-        track: {
-          strokeWidth: '100%',
-        },
-        dataLabels: {
-          name: {
-            show: false
+  function renderPercentageChart(value = 97.86) {
+    const chartEl = document.querySelector("#percentageChart");
+
+    if (!chartEl) return;
+
+    // Destroy old chart if exists
+    if (chartEl._apexchart) {
+      chartEl._apexchart.destroy();
+    }
+
+    var options = {
+      series: [value],
+      chart: {
+        height: 250,
+        type: 'radialBar',
+      },
+      plotOptions: {
+        radialBar: {
+          startAngle: -90,
+          endAngle: 90,
+          hollow: {
+            size: '60%',
           },
-          value: {
-            fontSize: '26px',
-            fontWeight: 600,
-            formatter: function (val) {
-              return val.toFixed(2) + "%";
+          track: {
+            strokeWidth: '100%',
+          },
+          dataLabels: {
+            name: { show: false },
+            value: {
+              fontSize: '26px',
+              fontWeight: 600,
+              formatter: function (val) {
+                return val.toFixed(2) + "%";
+              }
             }
           }
         }
-      }
-    },
-    stroke: {
-      lineCap: 'round'
-    },
-    colors: ['#1E90FF'], // blue
-  };
+      },
+      stroke: { lineCap: 'round' },
+      colors: ['#1E90FF']
+    };
 
-  var chart = new ApexCharts(document.querySelector("#percentageChart"), options);
-  chart.render();
-    </script>
+    var chart = new ApexCharts(chartEl, options);
+    chart.render();
+
+    // keep reference for destroy later
+    chartEl._apexchart = chart;
+  }
+
+  // Initial render
+  renderPercentageChart(97.86);
+
+  // Example: refresh every 30s
+  // setInterval(() => renderPercentageChart(97.86), 30000);
+</script>
     
 <script>
 async function loadUsage() {
