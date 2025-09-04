@@ -1005,18 +1005,18 @@
       <div class="card-body pt-lg-10">
         <div class="row g-6">
           <div class="col-md-3 col-6">
-            <div class="d-flex align-items-center">
-              <div class="avatar">
-                <div class="avatar-initial bg-label-primary rounded shadow-xs">
-                  <i class="icon-base ri ri-pie-chart-2-line ri ri-24px"></i>
-                </div>
-              </div>
-              <div class="ms-3">
-                <p class="mb-0">Request</p>
-                <h5 class="mb-0" id="total-hits">0</h5>
-              </div>
-            </div>
-          </div>
+  <div class="d-flex align-items-center">
+    <div class="avatar">
+      <div class="avatar-initial bg-label-primary rounded shadow-xs">
+        <i class="icon-base ri ri-pie-chart-2-line ri ri-24px"></i>
+      </div>
+    </div>
+    <div class="ms-3">
+      <p class="mb-0">Request</p>
+      <h5 class="mb-0" id="total-hits">0</h5>
+    </div>
+  </div>
+</div>
           <div class="col-md-3 col-6">
             <div class="d-flex align-items-center">
               <div class="avatar">
@@ -1378,6 +1378,20 @@ async function loadUsage() {
 loadUsage();
 </script>
 
+<script>
+  async function loadTotalHits() {
+    try {
+      const res = await fetch('/api/hits');
+      const data = await res.json();
+      document.getElementById('total-hits').textContent = data.total;
+    } catch (e) {
+      document.getElementById('total-hits').textContent = 'Error';
+    }
+  }
+
+  loadTotalHits();
+</script>
+    
   <script src="js/jquery.js"></script>
   <script src="js/popper.js"></script>
   <script src="js/bootstrap.js"></script>
