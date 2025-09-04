@@ -769,11 +769,18 @@
           <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
   <div class="navbar-nav align-items-center">
     <div class="nav-item navbar-search-wrapper mb-0">
-      <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+      <!-- Search Toggle Button -->
+      <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);" id="searchToggle">
         <i class="ri-search-line ri-20px text-body"></i>
       </a>
     </div>
   </div>
+</div>
+
+<!-- Hidden Search Bar -->
+<div id="searchBar" class="search-bar d-none">
+  <input type="text" class="form-control" placeholder="Search..." />
+</div>
              <ul class="navbar-nav flex-row align-items-center ms-md-auto">
               <li class="nav-item dropdown me-sm-2 me-xl-0">
                 <a class="nav-link dropdown-toggle hide-arrow btn btn-icon btn-text-secondary rounded-pill" id="nav-theme" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -1148,6 +1155,19 @@
 
 <style>
 
+.search-bar {
+  position: absolute;
+  top: 60px; /* adjust if navbar height different */
+  right: 20px;
+  width: 250px;
+  z-index: 1050;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+} 
+  
 .percent-label {
       text-align: center;
       margin-top: -10px;
@@ -1197,6 +1217,21 @@
 }
 </style>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const toggleBtn = document.getElementById("searchToggle");
+  const searchBar = document.getElementById("searchBar");
+  const searchInput = searchBar.querySelector("input");
+
+  toggleBtn.addEventListener("click", function () {
+    searchBar.classList.toggle("d-none");
+    if (!searchBar.classList.contains("d-none")) {
+      searchInput.focus(); // auto focus when shown
+    }
+  });
+});
+</script> 
+  
 <script>
 // Function to create cut-cut gauge
 function createGauge(percentage) {
