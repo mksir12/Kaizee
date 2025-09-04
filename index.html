@@ -1338,8 +1338,8 @@ async function loadUsage() {
     data.forEach(item => {
       const li = document.createElement("li");
 
-      // 🔥 Convert UTC timestamp to IST with AM/PM
-      const date = new Date(item.time + 'Z'); // Make sure it's treated as UTC
+      // Format timestamp to IST with AM/PM
+      const date = new Date(item.time + 'Z');
       const options = {
         timeZone: 'Asia/Kolkata',
         year: 'numeric',
