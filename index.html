@@ -1446,6 +1446,9 @@ async function loadErrors() {
             <i class="ri ri-calendar-line me-1"></i> ${istTime}
           </span>
         </div>
+        <div>
+          <span class="tag">${item.tag}</span>
+        </div>
       `;
       errorList.appendChild(li);
     });
@@ -1454,7 +1457,7 @@ async function loadErrors() {
       "<li class='text-danger'>Error loading data</li>";
   }
 }
-
+  
 loadErrors();
 </script>
   
