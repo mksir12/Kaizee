@@ -1031,31 +1031,31 @@
             </div>
           </div>
           <div class="col-md-3 col-6">
-            <div class="d-flex align-items-center">
-              <div class="avatar">
-                <div class="avatar-initial bg-label-success rounded shadow-xs">
-                  <i class="icon-base ri ri-checkbox-circle-line ri ri-24px"></i>
-                </div>
-              </div>
-              <div class="ms-3">
-                <p class="mb-0">Success</p>
-                <h5 class="mb-0" id="successful-requests">0</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="d-flex align-items-center">
-              <div class="avatar">
-                <div class="avatar-initial bg-label-danger rounded shadow-xs">
-                  <i class="icon-base ri ri-bug-line ri ri-24px"></i>
-                </div>
-              </div>
-              <div class="ms-3">
-                <p class="mb-0">Failed</p>
-                <h5 class="mb-0" id="total-errors">0</h5>
-              </div>
-            </div>
-          </div>
+  <div class="d-flex align-items-center">
+    <div class="avatar">
+      <div class="avatar-initial bg-label-success rounded shadow-xs">
+        <i class="icon-base ri ri-checkbox-circle-line ri ri-24px"></i>
+      </div>
+    </div>
+    <div class="ms-3">
+      <p class="mb-0">Success</p>
+      <h5 class="mb-0" id="successful-requests">0</h5>
+    </div>
+  </div>
+ </div>
+<div class="col-md-3 col-6">
+  <div class="d-flex align-items-center">
+    <div class="avatar">
+      <div class="avatar-initial bg-label-danger rounded shadow-xs">
+        <i class="icon-base ri ri-bug-line ri ri-24px"></i>
+      </div>
+    </div>
+    <div class="ms-3">
+      <p class="mb-0">Failed</p>
+      <h5 class="mb-0" id="total-errors">0</h5>
+    </div>
+  </div>
+</div>
         </div>
       </div>
     </div>
@@ -1390,6 +1390,25 @@ loadUsage();
   }
 
   loadTotalHits();
+</script>
+
+<script>
+  async function loadStats() {
+    try {
+      const res = await fetch('/api/stats');
+      const data = await res.json();
+
+      document.getElementById('total-hits').textContent = data.total;
+      document.getElementById('successful-requests').textContent = data.success;
+      document.getElementById('total-errors').textContent = data.failed;
+    } catch (e) {
+      document.getElementById('total-hits').textContent = 'Error';
+      document.getElementById('successful-requests').textContent = 'Error';
+      document.getElementById('total-errors').textContent = 'Error';
+    }
+  }
+
+  loadStats();
 </script>
     
   <script src="js/jquery.js"></script>
