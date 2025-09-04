@@ -769,7 +769,6 @@
           <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
   <div class="navbar-nav align-items-center">
     <div class="nav-item navbar-search-wrapper mb-0">
-      <!-- Search Toggle Button -->
       <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);" id="searchToggle">
         <i class="ri-search-line ri-20px text-body"></i>
       </a>
@@ -778,7 +777,8 @@
 
 <!-- Hidden Search Bar -->
 <div id="searchBar" class="search-bar d-none">
-  <input type="text" class="form-control" placeholder="Search..." />
+  <input type="text" id="searchInput" class="form-control" placeholder="Search API (e.g. peace, spotify, lost-part4)" />
+  <ul id="searchResults" class="list-group mt-2"></ul>
 </div>
              <ul class="navbar-nav flex-row align-items-center ms-md-auto">
               <li class="nav-item dropdown me-sm-2 me-xl-0">
@@ -1156,16 +1156,20 @@
 
 .search-bar {
   position: absolute;
-  top: 60px; /* adjust if navbar height different */
+  top: 60px;
   right: 20px;
-  width: 250px;
+  width: 350px;
   z-index: 1050;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 5px;
+  padding: 10px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-} 
+}
+#searchResults {
+  max-height: 200px;
+  overflow-y: auto;
+}
   
 .percent-label {
       text-align: center;
@@ -1217,19 +1221,67 @@
 </style>
 
 <script>
+// Your API list (from jerry.html)
+const apiList = [
+  { name: "Peace", endpoint: "/peace" },
+  { name: "Lost Part 4", endpoint: "/lost-part4" },
+  { name: "Spotify", endpoint: "/spotify" },
+  { name: "TikTok", endpoint: "/tiktok" },
+  { name: "YouTube Mp3", endpoint: "/ytmp3" },
+  { name: "Play MP3", endpoint: "/playmp3" },
+  { name: "Meme", endpoint: "/meme" }
+];
+
 document.addEventListener("DOMContentLoaded", function() {
   const toggleBtn = document.getElementById("searchToggle");
   const searchBar = document.getElementById("searchBar");
-  const searchInput = searchBar.querySelector("input");
+  const searchInput = document.getElementById("searchInput");
+  const resultsList = document.getElementById("searchResults");
 
+  // Toggle search bar
   toggleBtn.addEventListener("click", function () {
     searchBar.classList.toggle("d-none");
     if (!searchBar.classList.contains("d-none")) {
-      searchInput.focus(); // auto focus when shown
+      searchInput.focus();
     }
   });
+
+  // Filter API list while typing
+  searchInput.addEventListener("input", function () {
+    const query = searchInput.value.toLowerCase();
+    resultsList.innerHTML = "";
+
+    if (!query) return;
+
+    const filtered = apiList.filter(api => 
+      api.name.toLowerCase().includes(query) || 
+      api.endpoint.toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+      resultsList.innerHTML = `<li class="list-group-item">No results found</li>`;
+      return;
+    }
+
+    filtered.forEach(api => {
+      const li = document.createElement("li");
+      li.className = "list-group-item list-group-item-action";
+      li.textContent = `${api.name} (${api.endpoint})`;
+      li.addEventListener("click", async () => {
+        resultsList.innerHTML = `<li class="list-group-item">Loading ${api.endpoint}...</li>`;
+        try {
+          const res = await fetch(api.endpoint);
+          const data = await res.json();
+          resultsList.innerHTML = `<li class="list-group-item"><pre>${JSON.stringify(data, null, 2)}</pre></li>`;
+        } catch (err) {
+          resultsList.innerHTML = `<li class="list-group-item text-danger">Error: ${err.message}</li>`;
+        }
+      });
+      resultsList.appendChild(li);
+    });
+  });
 });
-</script> 
+   </script> 
   
 <script>
 // Function to create cut-cut gauge
