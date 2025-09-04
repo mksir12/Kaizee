@@ -1584,15 +1584,19 @@ async function loadUsage() {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <div class="check-icon">✔</div>
-        <div class="details">
-          <span class="name">${item.name}</span>
-          <span class="time">📅 ${item.time}</span>
-        </div>
-        <div>
-          <span class="tag">${item.tag}</span>
-        </div>
-      `;
+  <div class="avatar me-2">
+    <div class="avatar-initial bg-label-success rounded shadow-xs">
+      <i class="ri ri-checkbox-circle-line ri-24px"></i>
+    </div>
+  </div>
+  <div class="details flex-grow-1">
+    <span class="name">${item.name}</span>
+    <span class="time d-block">📅 ${item.time}</span>
+  </div>
+  <div>
+    <span class="tag">${item.tag}</span>
+  </div>
+`;
       usageList.appendChild(li);
     });
   } catch (err) {
