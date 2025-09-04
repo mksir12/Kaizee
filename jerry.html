@@ -1054,21 +1054,22 @@
     </div>
   </div>
   <div class="col-xl-4 col-md-6">
-  <div class="card">
-    <div class="card-header">
-      <h5 class="card-title m-0">Persentase</h5>
-      <p class="small mb-0">
-        <span class="h6 mb-0">APIs healthy</span> for router response.
-      </p>
-    </div>
-    <div class="card-body text-center">
-      <canvas id="percentChart" width="220" height="120"></canvas>
-      <h4 class="mt-3" id="percentValue">97.86%</h4>
-      <p class="mb-1">Persent Rate</p>
-      <span class="badge bg-label-primary">Task Success</span>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title m-0">Persentase</h5>
+          <p class="small mb-0">
+            <span class="h6 mb-0">APIs healthy</span> for router response.
+          </p>
+        </div>
+        <div class="card-body">
+          <div id="percentageChart"></div>
+          <div class="percent-label">
+            <h6 class="mb-1">Persent Rate</h6>
+            <span class="badge bg-label-primary text-dark">Task Success</span>
+          </div>
+        </div>
+      </div>
   </div>
-</div>
   <div class="col-xl-4 col-md-6">
     <div class="card">
       <div class="card-header">
@@ -1140,6 +1141,11 @@
   </div>
 
 <style>
+
+.percent-label {
+      text-align: center;
+      margin-top: -10px;
+    }
 /* === Custom Styles === */
 #usage-list li {
   display: flex;
@@ -1185,51 +1191,48 @@
 }
 </style>
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
-const percentValue = 97.86; // your dynamic value
-const segments = 50; // how many cuts you want in the semi-circle
+  var options = {
+    series: [97.86], // Percentage value
+    chart: {
+      height: 250,
+      type: 'radialBar',
+    },
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        hollow: {
+          size: '60%',
+        },
+        track: {
+          strokeWidth: '100%',
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            fontSize: '26px',
+            fontWeight: 600,
+            formatter: function (val) {
+              return val.toFixed(2) + "%";
+            }
+          }
+        }
+      }
+    },
+    stroke: {
+      lineCap: 'round'
+    },
+    colors: ['#1E90FF'], // blue
+  };
 
-// prepare data array
-let data = [];
-let colors = [];
-for (let i = 0; i < segments; i++) {
-  const segPercent = (i / segments) * 100;
-  if (segPercent < percentValue) {
-    colors.push("#007bff"); // blue for completed
-  } else {
-    colors.push("#e9ecef"); // light gray for rest
-  }
-  data.push(2); // each segment same size
-}
-
-const ctx = document.getElementById("percentChart").getContext("2d");
-
-new Chart(ctx, {
-  type: "doughnut",
-  data: {
-    datasets: [{
-      data: data,
-      backgroundColor: colors,
-      borderWidth: 2,
-      borderColor: "#fff" // gives the "cut" effect
-    }]
-  },
-  options: {
-    rotation: -90,
-    circumference: 180, // half circle
-    cutout: "70%", // thickness
-    plugins: {
-      legend: { display: false },
-      tooltip: { enabled: false }
-    }
-  }
-});
-
-document.getElementById("percentValue").innerText = percentValue + "%";
-</script>
+  var chart = new ApexCharts(document.querySelector("#percentageChart"), options);
+  chart.render();
+    </script>
     
 <script>
 async function loadUsage() {
