@@ -1061,7 +1061,10 @@
     </div>
     <div class="card-body pt-lg-2">
       <!-- Custom Chart -->
-      <div id="weeklyOverviewChart" style="display: flex; align-items: flex-end; gap: 8px; height: 250px; border-left: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px;"></div>
+      <div id="weeklyOverviewChart" style="display: flex; align-items: flex-end; gap: 12px; height: 250px; border-left: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px; position: relative;"></div>
+
+      <!-- Tooltip -->
+      <div id="chartTooltip" style="position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 8px 12px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: none; pointer-events: none; z-index: 10;"></div>
 
       <!-- Weekly total -->
       <div class="mt-1 mt-md-3">
@@ -1396,7 +1399,7 @@ loadUsage();
 <script>
   async function loadTotalHits() {
     try {
-      const res = await fetch('/api/hits');
+      const res = await fetch('https://jerrycoder.oggyapi.workers.dev/api/hits');
       const data = await res.json();
       document.getElementById('total-hits').textContent = data.total;
     } catch (e) {
@@ -1410,7 +1413,7 @@ loadUsage();
 <script>
   async function loadStats() {
     try {
-      const res = await fetch('/api/stats');
+      const res = await fetch('https://jerrycoder.oggyapi.workers.dev/api/stats');
       const data = await res.json();
 
       document.getElementById('total-hits').textContent = data.total;
@@ -1448,9 +1451,10 @@ async function loadWeeklyStats() {
 
     // Render custom bars
     const chartContainer = document.getElementById("weeklyOverviewChart");
-    chartContainer.innerHTML = ""; // Clear previous chart
+    const tooltip = document.getElementById("chartTooltip");
+    chartContainer.innerHTML = "";
 
-    const maxVal = Math.max(...weeklyData, 1); // Avoid division by zero
+    const maxVal = Math.max(...weeklyData, 1);
 
     weeklyData.forEach((value, index) => {
       const bar = document.createElement("div");
@@ -1459,20 +1463,9 @@ async function loadWeeklyStats() {
       bar.style.background = "#1E90FF";
       bar.style.borderRadius = "6px 6px 0 0";
       bar.style.position = "relative";
-      bar.title = `${days[index]}: ${value} hits (${percentages[index]}%)`;
+      bar.style.cursor = "pointer";
 
-      // Optional: Add value label above bar
-      const label = document.createElement("div");
-      label.textContent = value;
-      label.style.position = "absolute";
-      label.style.top = "-20px";
-      label.style.width = "100%";
-      label.style.textAlign = "center";
-      label.style.fontSize = "12px";
-      label.style.color = "#333";
-      bar.appendChild(label);
-
-      // Add day label below
+      // Add day label
       const dayLabel = document.createElement("div");
       dayLabel.textContent = days[index];
       dayLabel.style.textAlign = "center";
@@ -1487,6 +1480,26 @@ async function loadWeeklyStats() {
       barWrapper.appendChild(bar);
       barWrapper.appendChild(dayLabel);
 
+      // Tooltip handling
+      bar.addEventListener("mouseenter", (e) => {
+        tooltip.style.display = "block";
+        tooltip.innerHTML = `
+          <b>${days[index]}</b><br>
+          Requests: ${value} hits (${percentages[index]}%)
+        `;
+        tooltip.style.left = `${e.target.offsetLeft + e.target.offsetWidth / 2 - tooltip.offsetWidth / 2}px`;
+        tooltip.style.top = `${e.target.offsetTop - 40}px`;
+      });
+
+      bar.addEventListener("mouseleave", () => {
+        tooltip.style.display = "none";
+      });
+
+      bar.addEventListener("mousemove", (e) => {
+        tooltip.style.left = `${e.pageX - chartContainer.offsetLeft - tooltip.offsetWidth / 2}px`;
+        tooltip.style.top = `${e.pageY - chartContainer.offsetTop - 50}px`;
+      });
+
       chartContainer.appendChild(barWrapper);
     });
 
@@ -1495,14 +1508,14 @@ async function loadWeeklyStats() {
   }
 }
 
-// Load chart on page load
 loadWeeklyStats();
 </script>
+
 
 <script>
 async function loadErrors() {
   try {
-    const res = await fetch("/api/errors");
+    const res = await fetch("https://jerrycoder.oggyapi.workers.dev/api/errors");
     const data = await res.json();
 
     const errorList = document.getElementById("error-list");
