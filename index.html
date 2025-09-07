@@ -1053,22 +1053,25 @@
   </div>
   </div>
   <div class="col-xl-4 col-md-6">
-    <div class="card">
-      <div class="card-header">
-        <div class="d-flex justify-content-between">
-          <h5 class="mb-1">Statistics</h5>
-        </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between">
+        <h5 class="mb-1">Statistics</h5>
       </div>
-      <div class="card-body pt-lg-2">
-        <div id="weeklyOverviewChart"></div>
-        <div class="mt-1 mt-md-3">
-          <div class="d-flex align-items-center gap-4">
-            <h4 class="mb-0" id="total-weekly">0</h4>
-            <p class="mb-0">Total hit weekly and statistics</p>
-          </div>
+    </div>
+    <div class="card-body pt-lg-2">
+      <!-- Custom Chart -->
+      <div id="weeklyOverviewChart" style="display: flex; align-items: flex-end; gap: 8px; height: 250px; border-left: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px;"></div>
+
+      <!-- Weekly total -->
+      <div class="mt-1 mt-md-3">
+        <div class="d-flex align-items-center gap-4">
+          <h4 class="mb-0" id="total-weekly">0</h4>
+          <p class="mb-0">Total hit weekly and statistics</p>
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <div class="col-xl-4 col-md-6">
@@ -1421,6 +1424,79 @@ loadUsage();
   }
 
   loadStats();
+</script>
+
+    <script>
+async function loadWeeklyStats() {
+  try {
+    const res = await fetch("https://jerrycoder.oggyapi.workers.dev/api/hits");
+    const data = await res.json();
+
+    const weeklyStats = data.stats || [];
+    const weeklyData = weeklyStats.map(item => item.total);
+    const days = weeklyStats.map(item => {
+      const d = new Date(item.date);
+      return d.toLocaleDateString("en-US", { weekday: "short" });
+    });
+
+    // Total weekly
+    const total = weeklyData.reduce((a, b) => a + b, 0);
+    document.getElementById("total-weekly").textContent = total;
+
+    // Percentages
+    const percentages = weeklyData.map(v => total > 0 ? ((v / total) * 100).toFixed(1) : 0);
+
+    // Render custom bars
+    const chartContainer = document.getElementById("weeklyOverviewChart");
+    chartContainer.innerHTML = ""; // Clear previous chart
+
+    const maxVal = Math.max(...weeklyData, 1); // Avoid division by zero
+
+    weeklyData.forEach((value, index) => {
+      const bar = document.createElement("div");
+      bar.style.height = `${(value / maxVal) * 100}%`;
+      bar.style.width = "30px";
+      bar.style.background = "#1E90FF";
+      bar.style.borderRadius = "6px 6px 0 0";
+      bar.style.position = "relative";
+      bar.title = `${days[index]}: ${value} hits (${percentages[index]}%)`;
+
+      // Optional: Add value label above bar
+      const label = document.createElement("div");
+      label.textContent = value;
+      label.style.position = "absolute";
+      label.style.top = "-20px";
+      label.style.width = "100%";
+      label.style.textAlign = "center";
+      label.style.fontSize = "12px";
+      label.style.color = "#333";
+      bar.appendChild(label);
+
+      // Add day label below
+      const dayLabel = document.createElement("div");
+      dayLabel.textContent = days[index];
+      dayLabel.style.textAlign = "center";
+      dayLabel.style.marginTop = "4px";
+      dayLabel.style.fontSize = "12px";
+      dayLabel.style.color = "#555";
+
+      const barWrapper = document.createElement("div");
+      barWrapper.style.display = "flex";
+      barWrapper.style.flexDirection = "column";
+      barWrapper.style.alignItems = "center";
+      barWrapper.appendChild(bar);
+      barWrapper.appendChild(dayLabel);
+
+      chartContainer.appendChild(barWrapper);
+    });
+
+  } catch (err) {
+    console.error("Failed to load weekly stats:", err);
+  }
+}
+
+// Load chart on page load
+loadWeeklyStats();
 </script>
 
 <script>
