@@ -1059,12 +1059,12 @@
         <h5 class="mb-1">Statistics</h5>
       </div>
     </div>
-    <div class="card-body pt-lg-2">
-      <!-- Custom Chart -->
-      <div id="weeklyOverviewChart" style="display: flex; align-items: flex-end; gap: 12px; height: 250px; border-left: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px; position: relative;"></div>
+    <div class="card-body pt-lg-2 position-relative">
+      <!-- Chart -->
+      <div id="weeklyOverviewChart" class="chart-container"></div>
 
       <!-- Tooltip -->
-      <div id="chartTooltip" style="position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 8px 12px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: none; pointer-events: none; z-index: 10;"></div>
+      <div id="chartTooltip" class="chart-tooltip"></div>
 
       <!-- Weekly total -->
       <div class="mt-1 mt-md-3">
@@ -1075,7 +1075,7 @@
       </div>
     </div>
   </div>
-  </div>
+</div>
 
   <div class="col-xl-4 col-md-6">
   <div class="card-group">
@@ -1236,6 +1236,52 @@
   font-weight: 500;
   white-space: nowrap;
 }
+
+  .chart-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 250px;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 10px 0 10px;
+    position: relative;
+  }
+
+  .chart-tooltip {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .bar {
+    width: 20px;
+    background-color: #1E90FF;
+    border-radius: 6px 6px 0 0;
+    transition: height 0.3s ease;
+    cursor: pointer;
+  }
+
+  .bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+  }
+
+  .day-label {
+    font-size: 12px;
+    margin-top: 6px;
+    text-align: center;
+  }  
 </style>
 
 <script>
@@ -1430,87 +1476,70 @@ loadUsage();
 </script>
 
     <script>
-async function loadWeeklyStats() {
-  try {
-    const res = await fetch("https://jerrycoder.oggyapi.workers.dev/api/hits");
-    const data = await res.json();
+  async function loadWeeklyStats() {
+    try {
+      const res = await fetch("https://jerrycoder.oggyapi.workers.dev/api/hits");
+      const data = await res.json();
 
-    const weeklyStats = data.stats || [];
-    const weeklyData = weeklyStats.map(item => item.total);
-    const days = weeklyStats.map(item => {
-      const d = new Date(item.date);
-      return d.toLocaleDateString("en-US", { weekday: "short" });
-    });
-
-    // Total weekly
-    const total = weeklyData.reduce((a, b) => a + b, 0);
-    document.getElementById("total-weekly").textContent = total;
-
-    // Percentages
-    const percentages = weeklyData.map(v => total > 0 ? ((v / total) * 100).toFixed(1) : 0);
-
-    // Render custom bars
-    const chartContainer = document.getElementById("weeklyOverviewChart");
-    const tooltip = document.getElementById("chartTooltip");
-    chartContainer.innerHTML = "";
-
-    const maxVal = Math.max(...weeklyData, 1);
-
-    weeklyData.forEach((value, index) => {
-      const bar = document.createElement("div");
-      bar.style.height = `${(value / maxVal) * 100}%`;
-      bar.style.width = "30px";
-      bar.style.background = "#1E90FF";
-      bar.style.borderRadius = "6px 6px 0 0";
-      bar.style.position = "relative";
-      bar.style.cursor = "pointer";
-
-      // Add day label
-      const dayLabel = document.createElement("div");
-      dayLabel.textContent = days[index];
-      dayLabel.style.textAlign = "center";
-      dayLabel.style.marginTop = "4px";
-      dayLabel.style.fontSize = "12px";
-      dayLabel.style.color = "#555";
-
-      const barWrapper = document.createElement("div");
-      barWrapper.style.display = "flex";
-      barWrapper.style.flexDirection = "column";
-      barWrapper.style.alignItems = "center";
-      barWrapper.appendChild(bar);
-      barWrapper.appendChild(dayLabel);
-
-      // Tooltip handling
-      bar.addEventListener("mouseenter", (e) => {
-        tooltip.style.display = "block";
-        tooltip.innerHTML = `
-          <b>${days[index]}</b><br>
-          Requests: ${value} hits (${percentages[index]}%)
-        `;
-        tooltip.style.left = `${e.target.offsetLeft + e.target.offsetWidth / 2 - tooltip.offsetWidth / 2}px`;
-        tooltip.style.top = `${e.target.offsetTop - 40}px`;
+      const weeklyStats = data.stats || [];
+      const weeklyData = weeklyStats.map(item => item.total);
+      const days = weeklyStats.map(item => {
+        const d = new Date(item.date);
+        return d.toLocaleDateString("en-US", { weekday: "short" }); // English
       });
 
-      bar.addEventListener("mouseleave", () => {
-        tooltip.style.display = "none";
+      const total = weeklyData.reduce((a, b) => a + b, 0);
+      document.getElementById("total-weekly").textContent = total;
+
+      const chartContainer = document.getElementById("weeklyOverviewChart");
+      const tooltip = document.getElementById("chartTooltip");
+
+      chartContainer.innerHTML = "";
+
+      const maxVal = Math.max(...weeklyData, 1);
+      const minDisplayMax = 200;
+      const scaledMax = Math.max(maxVal, minDisplayMax);
+
+      weeklyData.forEach((value, index) => {
+        const heightPercent = (value / scaledMax) * 100;
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = `${heightPercent}%`;
+
+        const label = document.createElement("div");
+        label.className = "day-label";
+        label.textContent = days[index];
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "bar-wrapper";
+        wrapper.appendChild(bar);
+        wrapper.appendChild(label);
+
+        bar.addEventListener("mouseenter", (e) => {
+          tooltip.style.display = "block";
+          tooltip.innerHTML = `<b>${days[index]}</b><br>Requests: ${value}`;
+
+          const rect = bar.getBoundingClientRect();
+          const containerRect = chartContainer.getBoundingClientRect();
+
+          tooltip.style.left = `${rect.left + rect.width / 2 - containerRect.left}px`;
+          tooltip.style.top = `${rect.top - containerRect.top - 12}px`;
+        });
+
+        bar.addEventListener("mouseleave", () => {
+          tooltip.style.display = "none";
+        });
+
+        chartContainer.appendChild(wrapper);
       });
-
-      bar.addEventListener("mousemove", (e) => {
-        tooltip.style.left = `${e.pageX - chartContainer.offsetLeft - tooltip.offsetWidth / 2}px`;
-        tooltip.style.top = `${e.pageY - chartContainer.offsetTop - 50}px`;
-      });
-
-      chartContainer.appendChild(barWrapper);
-    });
-
-  } catch (err) {
-    console.error("Failed to load weekly stats:", err);
+    } catch (err) {
+      console.error("Error loading weekly stats:", err);
+    }
   }
-}
 
-loadWeeklyStats();
+  loadWeeklyStats();
 </script>
-
 
 <script>
 async function loadErrors() {
