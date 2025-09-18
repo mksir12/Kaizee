@@ -16,20 +16,19 @@ body {
   scroll-behavior:smooth;
 }
 body.dark { background: linear-gradient(135deg,#1c1c1c,#2c2c2c); color:#fff; }
-
 header {
   background:#1e88e5;
   color:#fff;
-  padding:1.5rem;
-  text-align:center;
-  position:relative;
+  padding:1rem 1.5rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:1000;
 }
-header h1{margin:0;font-weight:600;font-size:1.8rem;}
-header p{margin-top:0.3rem;font-weight:400;font-size:1rem;opacity:0.9;}
+header h1{margin:0;font-weight:600;font-size:1.5rem;}
 #modeToggle {
-  position:absolute;
-  top:15px;
-  right:15px;
   background:#fff;
   color:#1e88e5;
   border:none;
@@ -40,9 +39,21 @@ header p{margin-top:0.3rem;font-weight:400;font-size:1rem;opacity:0.9;}
   transition: all 0.3s;
 }
 body.dark #modeToggle { background:#1e88e5; color:#fff; }
+#homeBtn {
+  background:#fff;
+  color:#1e88e5;
+  border:none;
+  padding:0.4rem 0.8rem;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+  margin-right:10px;
+  transition: all 0.3s;
+}
+body.dark #homeBtn { background:#1e88e5; color:#fff; }
 
-.container { max-width:1200px; width:100%; margin:2rem auto; padding:0 1rem; }
-.filters { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; justify-content:center; position:sticky; top:80px; background:inherit; z-index:10; padding-top:0.5rem; }
+.container { max-width:1200px; width:100%; margin:1.5rem auto; padding:0 1rem; }
+.filters { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; justify-content:center; position:sticky; top:70px; background:inherit; z-index:10; padding-top:0.5rem; }
 .filters button {
   padding:0.5rem 1rem;
   border:none;
@@ -67,8 +78,8 @@ body.dark .filters button{background:#444;color:#fff;}
   color:#333;
 }
 body.dark #searchInput{background:#333;color:#fff;border:1px solid #555;}
-.api-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; width:100%; }
 
+.api-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; width:100%; }
 .api-item {
   background:#fff;
   border-radius:12px;
@@ -93,9 +104,9 @@ code {
   border-radius:4px;
   font-size:0.9rem;
   word-break:break-word;
-  color:#00e676;
+  color:#000; /* normal recognizing type color */
 }
-body.dark code{background:#333;color:#00e676;}
+body.dark code{background:#333;color:#fff;}
 
 .features { margin-top:0.5rem; }
 .feature {
@@ -110,6 +121,8 @@ body.dark code{background:#333;color:#00e676;}
 .feature.download { background:#1e88e5; }
 .feature.search { background:#43a047; }
 .feature.ai { background:#8e24aa; }
+.feature.nsfw { background:#e53935; }
+.feature.tool { background:#ff9800; }
 @keyframes glow {0%{box-shadow:0 0 2px rgba(255,255,255,0);}100%{box-shadow:0 0 8px rgba(255,255,255,0.6);}}
 
 .test-btn,.copy-btn,.status-btn{
@@ -135,45 +148,53 @@ body.dark footer{background:#1565c0;}
 <body>
 
 <header>
-  <h1>API Documentation</h1>
-  <p>Professional API reference with dark/light toggle & neon status</p>
+  <div>
+    <button id="homeBtn" onclick="window.location.href='/'">Home</button>
+    <h1 style="display:inline-block;margin-left:10px;">API Documentation</h1>
+  </div>
   <button id="modeToggle">Dark Mode</button>
 </header>
 
 <div class="container">
   <div class="filters">
     <button class="active" data-category="all">All</button>
-    <button data-category="download">Download</button>
-    <button data-category="search">Search</button>
-    <button data-category="ai">AI</button>
+    <button data-category="Downloader">Downloader</button>
+    <button data-category="Searching">Searching</button>
+    <button data-category="Anime">Anime</button>
+    <button data-category="Nsfw">NSFW</button>
+    <button data-category="OpenAi">OpenAi</button>
+    <button data-category="ePhoto360 Maker">ePhoto360 Maker</button>
+    <button data-category="Stalker">Stalker</button>
+    <button data-category="Tools">Tools</button>
   </div>
 
   <input type="text" id="searchInput" placeholder="Search APIs...">
 
   <ul class="api-list" id="apiList">
-    <li class="api-item" data-category="download">
+    <!-- Example API -->
+    <li class="api-item" data-category="Downloader">
       <span class="status-btn status-online">ONLINE</span>
       <h3>Snapchat Downloader</h3>
       <p><strong>Endpoint:</strong> <code>/snap?url=</code> <button class="copy-btn" onclick="copyToClipboard('/snap?url=')">Copy</button></p>
       <p><strong>Description:</strong> Download Snapchat Spotlight videos.</p>
       <div class="features">
-        <span class="feature download">Download</span>
-        <span class="feature download">Social Media</span>
+        <span class="feature download">Downloader</span>
       </div>
       <button class="test-btn" onclick="window.open('/snap?url=example','_blank')">Test API</button>
     </li>
 
-    <li class="api-item" data-category="search">
-      <span class="status-btn status-offline">OFFLINE</span>
-      <h3>Spotify Search</h3>
-      <p><strong>Endpoint:</strong> <code>/spotify?search=</code> <button class="copy-btn" onclick="copyToClipboard('/spotify?search=')">Copy</button></p>
-      <p><strong>Description:</strong> Search songs, albums, and playlists on Spotify.</p>
+    <li class="api-item" data-category="Anime">
+      <span class="status-btn status-online">ONLINE</span>
+      <h3>Neko Image</h3>
+      <p><strong>Endpoint:</strong> <code>/neko</code> <button class="copy-btn" onclick="copyToClipboard('/neko')">Copy</button></p>
+      <p><strong>Description:</strong> Get random Neko-themed anime images.</p>
       <div class="features">
-        <span class="feature search">Search</span>
-        <span class="feature search">Music</span>
+        <span class="feature ai">Anime</span>
       </div>
-      <button class="test-btn" onclick="window.open('/spotify?search=example','_blank')">Test API</button>
+      <button class="test-btn" onclick="window.open('/neko','_blank')">Test API</button>
     </li>
+
+    <!-- Add more APIs similarly -->
   </ul>
 </div>
 
@@ -185,13 +206,8 @@ body.dark footer{background:#1565c0;}
 </footer>
 
 <script>
-const searchInput = document.getElementById('searchInput');
-const apiItems = document.querySelectorAll('.api-item');
-const filterButtons = document.querySelectorAll('.filters button');
-const scrollTopBtn = document.getElementById('scrollTopBtn');
-const modeToggle = document.getElementById('modeToggle');
-
 // Dark/Light Mode
+const modeToggle = document.getElementById('modeToggle');
 if(localStorage.getItem('mode')==='dark'){document.body.classList.add('dark');modeToggle.textContent='Light Mode';}
 modeToggle.addEventListener('click',()=>{
   document.body.classList.toggle('dark');
@@ -200,15 +216,20 @@ modeToggle.addEventListener('click',()=>{
 });
 
 // Search and filter
-function highlightText(text, keyword){if(!keyword) return text;return text.replace(new RegExp(`(${keyword})`,'gi'),'<span class="highlight">$1</span>');}
+const searchInput=document.getElementById('searchInput');
+const apiItems=document.querySelectorAll('.api-item');
+const filterButtons=document.querySelectorAll('.filters button');
+
+function highlightText(text, keyword){if(!keyword)return text;return text.replace(new RegExp(`(${keyword})`,'gi'),'<span class="highlight">$1</span>');}
+
 function filterAPIs(){
   const searchText=searchInput.value.toLowerCase();
   const activeCategory=document.querySelector('.filters button.active')?.dataset.category||'all';
   apiItems.forEach(item=>{
     const matchesCategory=activeCategory==='all'||item.dataset.category===activeCategory;
     const matchesSearch=item.innerText.toLowerCase().includes(searchText);
-    item.style.display=(matchesCategory && matchesSearch)?'none':'none';
-    if(matchesCategory && matchesSearch) item.style.display='';
+    item.style.display=(matchesCategory && matchesSearch)?'':'none';
+    if(matchesCategory && matchesSearch)item.style.display='';
     // Highlight
     const h3=item.querySelector('h3');
     const code=item.querySelector('code');
@@ -217,18 +238,17 @@ function filterAPIs(){
   });
 }
 searchInput.addEventListener('input',filterAPIs);
-filterButtons.forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    filterButtons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    filterAPIs();
-  });
-});
+filterButtons.forEach(btn=>{btn.addEventListener('click',()=>{
+  filterButtons.forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filterAPIs();
+});});
 
 // Copy Endpoint
 function copyToClipboard(text){navigator.clipboard.writeText(text);alert('Copied: '+text);}
 
 // Scroll Top
+const scrollTopBtn=document.getElementById('scrollTopBtn');
 window.onscroll=function(){scrollTopBtn.style.display=(document.body.scrollTop>100||document.documentElement.scrollTop>100)?'block':'none';};
 function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
 </script>
