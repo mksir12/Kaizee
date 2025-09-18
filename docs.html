@@ -6,6 +6,7 @@
 <title>API Documentation</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: 'Inter', sans-serif;
@@ -13,34 +14,29 @@
     color: #333;
     overflow-x: hidden;
   }
-
   header {
     background: #1e88e5;
     color: #fff;
     padding: 1.5rem;
     text-align: center;
   }
-
   header h1 {
     margin: 0;
     font-weight: 600;
     font-size: 1.8rem;
   }
-
   header p {
     margin-top: 0.3rem;
     font-weight: 400;
     font-size: 1rem;
     opacity: 0.9;
   }
-
   .container {
     max-width: 1200px;
     width: 100%;
     margin: 2rem auto;
     padding: 0 1rem;
   }
-
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -48,7 +44,6 @@
     margin-bottom: 1.5rem;
     justify-content: center;
   }
-
   .filters button {
     padding: 0.5rem 1rem;
     border: none;
@@ -59,28 +54,25 @@
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
   }
-
   .filters button.active {
     background: #1e88e5;
     color: #fff;
   }
-
   #searchInput {
     width: 100%;
-    padding: 0.7rem 1rem;
+    padding: 0.8rem 1rem;
     border-radius: 8px;
     border: 1px solid #ddd;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     outline: none;
+    font-size: 1rem;
   }
-
   .api-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     width: 100%;
   }
-
   .api-item {
     background: #fff;
     border-radius: 10px;
@@ -90,27 +82,24 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow-wrap: break-word;
   }
-
   .api-item:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
   }
-
   .api-item h3 {
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: #1e88e5;
     word-break: break-word;
   }
-
   .api-item p {
     margin: 0.3rem 0;
     font-size: 0.95rem;
     color: #555;
     word-break: break-word;
   }
-
   code {
     background: #f1f1f1;
     padding: 0.2rem 0.5rem;
@@ -118,11 +107,9 @@
     font-size: 0.9rem;
     word-break: break-word;
   }
-
   .features {
     margin-top: 0.5rem;
   }
-
   .feature {
     display: inline-block;
     padding: 0.2rem 0.5rem;
@@ -131,11 +118,9 @@
     margin: 0.2rem 0.2rem 0 0;
     color: #fff;
   }
-
   .feature.download { background: #1e88e5; }
   .feature.search { background: #43a047; }
   .feature.ai { background: #8e24aa; }
-
   .test-btn {
     margin-top: 1rem;
     padding: 0.5rem;
@@ -147,9 +132,7 @@
     cursor: pointer;
     transition: background 0.2s;
   }
-
   .test-btn:hover { background: #ef6c00; }
-
   footer {
     margin-top: 3rem;
     text-align: center;
@@ -158,7 +141,7 @@
     color: #fff;
     font-size: 0.9rem;
   }
-
+  .highlight { background-color: yellow; }
   @media (max-width:600px){
     header h1{font-size:1.5rem;}
     .api-item{padding:1rem;}
@@ -184,7 +167,6 @@
   <input type="text" id="searchInput" placeholder="Search APIs...">
 
   <ul class="api-list" id="apiList">
-    <!-- Example API entries -->
     <li class="api-item" data-category="download">
       <h3>Snapchat Downloader</h3>
       <p><strong>Endpoint:</strong> <code>/snap?url=</code></p>
@@ -205,6 +187,17 @@
         <span class="feature search">Music</span>
       </div>
       <button class="test-btn" onclick="window.open('/spotify?search=example','_blank')">Test API</button>
+    </li>
+
+    <li class="api-item" data-category="download">
+      <h3>Instagram Downloader</h3>
+      <p><strong>Endpoint:</strong> <code>/insta?url=</code></p>
+      <p><strong>Description:</strong> Download Instagram reels and videos.</p>
+      <div class="features">
+        <span class="feature download">Download</span>
+        <span class="feature download">Social Media</span>
+      </div>
+      <button class="test-btn" onclick="window.open('/insta?url=example','_blank')">Test API</button>
     </li>
 
     <li class="api-item" data-category="ai">
@@ -241,14 +234,25 @@ const searchInput = document.getElementById('searchInput');
 const apiItems = document.querySelectorAll('.api-item');
 const filterButtons = document.querySelectorAll('.filters button');
 
+function highlightText(text, keyword){
+  if(!keyword) return text;
+  return text.replace(new RegExp(`(${keyword})`, 'gi'), '<span class="highlight">$1</span>');
+}
+
 function filterAPIs(){
   const searchText = searchInput.value.toLowerCase();
   const activeCategory = document.querySelector('.filters button.active')?.dataset.category || 'all';
   
   apiItems.forEach(item => {
-    const matchesSearch = item.innerText.toLowerCase().includes(searchText);
     const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
-    item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+    const matchesSearch = item.innerText.toLowerCase().includes(searchText);
+    item.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
+
+    // Highlight search matches
+    const h3 = item.querySelector('h3');
+    const code = item.querySelector('code');
+    h3.innerHTML = highlightText(h3.textContent, searchText);
+    code.innerHTML = highlightText(code.textContent, searchText);
   });
 }
 
