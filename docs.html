@@ -6,154 +6,138 @@
 <title>API Documentation</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #f5f6fa;
-    color: #333;
-    overflow-x: hidden;
-  }
-  header {
-    background: #1e88e5;
-    color: #fff;
-    padding: 1.5rem;
-    text-align: center;
-  }
-  header h1 {
-    margin: 0;
-    font-weight: 600;
-    font-size: 1.8rem;
-  }
-  header p {
-    margin-top: 0.3rem;
-    font-weight: 400;
-    font-size: 1rem;
-    opacity: 0.9;
-  }
-  .container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 2rem auto;
-    padding: 0 1rem;
-  }
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    justify-content: center;
-  }
-  .filters button {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background: #e0e0e0;
-    color: #333;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-  .filters button.active {
-    background: #1e88e5;
-    color: #fff;
-  }
-  #searchInput {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    margin-bottom: 2rem;
-    outline: none;
-    font-size: 1rem;
-  }
-  .api-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-  }
-  .api-item {
-    background: #fff;
-    border-radius: 10px;
-    padding: 1.5rem;
-    border: 1px solid #eee;
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow-wrap: break-word;
-  }
-  .api-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  }
-  .api-item h3 {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #1e88e5;
-    word-break: break-word;
-  }
-  .api-item p {
-    margin: 0.3rem 0;
-    font-size: 0.95rem;
-    color: #555;
-    word-break: break-word;
-  }
-  code {
-    background: #f1f1f1;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    word-break: break-word;
-  }
-  .features {
-    margin-top: 0.5rem;
-  }
-  .feature {
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    border-radius: 5px;
-    font-size: 0.75rem;
-    margin: 0.2rem 0.2rem 0 0;
-    color: #fff;
-  }
-  .feature.download { background: #1e88e5; }
-  .feature.search { background: #43a047; }
-  .feature.ai { background: #8e24aa; }
-  .test-btn {
-    margin-top: 1rem;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 6px;
-    background: #f57c00;
-    color: #fff;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .test-btn:hover { background: #ef6c00; }
-  footer {
-    margin-top: 3rem;
-    text-align: center;
-    padding: 1.5rem;
-    background: #1e88e5;
-    color: #fff;
-    font-size: 0.9rem;
-  }
-  .highlight { background-color: yellow; }
-  @media (max-width:600px){
-    header h1{font-size:1.5rem;}
-    .api-item{padding:1rem;}
-    .filters{justify-content:flex-start;}
-  }
+* { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+body {
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background: linear-gradient(135deg,#fdfbfb,#ebedee);
+  color:#333;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+}
+body.dark { background: linear-gradient(135deg,#1c1c1c,#2c2c2c); color:#fff; }
+
+header {
+  background:#1e88e5;
+  color:#fff;
+  padding:1.5rem;
+  text-align:center;
+  position:relative;
+}
+header h1{margin:0;font-weight:600;font-size:1.8rem;}
+header p{margin-top:0.3rem;font-weight:400;font-size:1rem;opacity:0.9;}
+#modeToggle {
+  position:absolute;
+  top:15px;
+  right:15px;
+  background:#fff;
+  color:#1e88e5;
+  border:none;
+  padding:0.4rem 0.8rem;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+  transition: all 0.3s;
+}
+body.dark #modeToggle { background:#1e88e5; color:#fff; }
+
+.container { max-width:1200px; width:100%; margin:2rem auto; padding:0 1rem; }
+.filters { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; justify-content:center; position:sticky; top:80px; background:inherit; z-index:10; padding-top:0.5rem; }
+.filters button {
+  padding:0.5rem 1rem;
+  border:none;
+  border-radius:6px;
+  background:#eee;
+  color:#333;
+  font-size:0.9rem;
+  cursor:pointer;
+  transition: all 0.3s;
+}
+body.dark .filters button{background:#444;color:#fff;}
+.filters button.active { background:#1e88e5; color:#fff; box-shadow:0 0 10px #1e88e5; }
+#searchInput {
+  width:100%;
+  padding:0.8rem 1rem;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin-bottom:2rem;
+  outline:none;
+  font-size:1rem;
+  background:#fff;
+  color:#333;
+}
+body.dark #searchInput{background:#333;color:#fff;border:1px solid #555;}
+.api-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; width:100%; }
+
+.api-item {
+  background:#fff;
+  border-radius:12px;
+  padding:1.5rem;
+  border:1px solid #ddd;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  transition: all 0.3s;
+}
+body.dark .api-item{background:#2b2b2b;border:1px solid #444;}
+.api-item:hover { transform: translateY(-5px); box-shadow:0 0 20px rgba(30,136,229,0.6); }
+
+.api-item h3{margin-bottom:0.5rem;font-weight:600;color:#1e88e5; word-break:break-word;}
+body.dark .api-item h3{color:#64b5f6;}
+.api-item p{margin:0.3rem 0;font-size:0.95rem;color:#555;word-break:break-word;}
+body.dark .api-item p{color:#ccc;}
+code {
+  background:#f1f1f1;
+  padding:0.2rem 0.5rem;
+  border-radius:4px;
+  font-size:0.9rem;
+  word-break:break-word;
+  color:#00e676;
+}
+body.dark code{background:#333;color:#00e676;}
+
+.features { margin-top:0.5rem; }
+.feature {
+  display:inline-block;
+  padding:0.2rem 0.5rem;
+  border-radius:5px;
+  font-size:0.75rem;
+  margin:0.2rem 0.2rem 0 0;
+  color:#fff;
+  animation: glow 2s infinite alternate;
+}
+.feature.download { background:#1e88e5; }
+.feature.search { background:#43a047; }
+.feature.ai { background:#8e24aa; }
+@keyframes glow {0%{box-shadow:0 0 2px rgba(255,255,255,0);}100%{box-shadow:0 0 8px rgba(255,255,255,0.6);}}
+
+.test-btn,.copy-btn,.status-btn{
+  margin-top:0.5rem;padding:0.4rem 0.7rem;border:none;border-radius:6px;font-size:0.85rem;cursor:pointer;transition:all 0.3s;
+}
+.test-btn{background:#f57c00;color:#fff;}
+.test-btn:hover{background:#ff9800;box-shadow:0 0 10px #ff9800;}
+.copy-btn{background:#555;color:#fff;margin-left:5px;}
+.copy-btn:hover{background:#777;box-shadow:0 0 8px #777;}
+.status-btn{
+  position:absolute;top:15px;right:15px;padding:0.3rem 0.6rem;font-size:0.75rem;font-weight:600;text-transform:uppercase;border-radius:6px;letter-spacing:0.5px;color:#fff;box-shadow:0 0 10px;
+}
+.status-online{background:#00e676;box-shadow:0 0 10px #00e676;}
+.status-offline{background:#ff1744;box-shadow:0 0 10px #ff1744;}
+.highlight{background-color:#ffeb3b;color:#000;padding:0 2px;border-radius:2px;}
+footer{margin-top:3rem;text-align:center;padding:1.5rem;background:#1e88e5;color:#fff;font-size:0.9rem;}
+body.dark footer{background:#1565c0;}
+#scrollTopBtn{position:fixed;bottom:20px;right:20px;padding:0.6rem 1rem;background:#1e88e5;color:#fff;border:none;border-radius:6px;cursor:pointer;display:none;z-index:100;box-shadow:0 0 10px #1e88e5;}
+#scrollTopBtn:hover{background:#1565c0;}
+@media(max-width:600px){header h1{font-size:1.5rem;} .filters{justify-content:flex-start;}}
 </style>
 </head>
 <body>
 
 <header>
   <h1>API Documentation</h1>
-  <p>Professional API reference with search, categories, and test buttons</p>
+  <p>Professional API reference with dark/light toggle & neon status</p>
+  <button id="modeToggle">Dark Mode</button>
 </header>
 
 <div class="container">
@@ -168,8 +152,9 @@
 
   <ul class="api-list" id="apiList">
     <li class="api-item" data-category="download">
+      <span class="status-btn status-online">ONLINE</span>
       <h3>Snapchat Downloader</h3>
-      <p><strong>Endpoint:</strong> <code>/snap?url=</code></p>
+      <p><strong>Endpoint:</strong> <code>/snap?url=</code> <button class="copy-btn" onclick="copyToClipboard('/snap?url=')">Copy</button></p>
       <p><strong>Description:</strong> Download Snapchat Spotlight videos.</p>
       <div class="features">
         <span class="feature download">Download</span>
@@ -179,8 +164,9 @@
     </li>
 
     <li class="api-item" data-category="search">
+      <span class="status-btn status-offline">OFFLINE</span>
       <h3>Spotify Search</h3>
-      <p><strong>Endpoint:</strong> <code>/spotify?search=</code></p>
+      <p><strong>Endpoint:</strong> <code>/spotify?search=</code> <button class="copy-btn" onclick="copyToClipboard('/spotify?search=')">Copy</button></p>
       <p><strong>Description:</strong> Search songs, albums, and playlists on Spotify.</p>
       <div class="features">
         <span class="feature search">Search</span>
@@ -188,41 +174,10 @@
       </div>
       <button class="test-btn" onclick="window.open('/spotify?search=example','_blank')">Test API</button>
     </li>
-
-    <li class="api-item" data-category="download">
-      <h3>Instagram Downloader</h3>
-      <p><strong>Endpoint:</strong> <code>/insta?url=</code></p>
-      <p><strong>Description:</strong> Download Instagram reels and videos.</p>
-      <div class="features">
-        <span class="feature download">Download</span>
-        <span class="feature download">Social Media</span>
-      </div>
-      <button class="test-btn" onclick="window.open('/insta?url=example','_blank')">Test API</button>
-    </li>
-
-    <li class="api-item" data-category="ai">
-      <h3>Neko Image</h3>
-      <p><strong>Endpoint:</strong> <code>/neko</code></p>
-      <p><strong>Description:</strong> Get random Neko-themed anime images.</p>
-      <div class="features">
-        <span class="feature ai">AI</span>
-        <span class="feature ai">Image</span>
-      </div>
-      <button class="test-btn" onclick="window.open('/neko','_blank')">Test API</button>
-    </li>
-
-    <li class="api-item" data-category="download">
-      <h3>YouTube MP3</h3>
-      <p><strong>Endpoint:</strong> <code>/ytmp3?url=</code></p>
-      <p><strong>Description:</strong> Convert YouTube videos to MP3 audio.</p>
-      <div class="features">
-        <span class="feature download">Download</span>
-        <span class="feature download">Audio</span>
-      </div>
-      <button class="test-btn" onclick="window.open('/ytmp3?url=example','_blank')">Test API</button>
-    </li>
   </ul>
 </div>
+
+<button id="scrollTopBtn" onclick="scrollToTop()">↑ Top</button>
 
 <footer>
   &copy; 2025 JerryCoder. All rights reserved. <br>
@@ -233,38 +188,49 @@
 const searchInput = document.getElementById('searchInput');
 const apiItems = document.querySelectorAll('.api-item');
 const filterButtons = document.querySelectorAll('.filters button');
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+const modeToggle = document.getElementById('modeToggle');
 
-function highlightText(text, keyword){
-  if(!keyword) return text;
-  return text.replace(new RegExp(`(${keyword})`, 'gi'), '<span class="highlight">$1</span>');
-}
+// Dark/Light Mode
+if(localStorage.getItem('mode')==='dark'){document.body.classList.add('dark');modeToggle.textContent='Light Mode';}
+modeToggle.addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  modeToggle.textContent=document.body.classList.contains('dark')?'Light Mode':'Dark Mode';
+  localStorage.setItem('mode',document.body.classList.contains('dark')?'dark':'light');
+});
 
+// Search and filter
+function highlightText(text, keyword){if(!keyword) return text;return text.replace(new RegExp(`(${keyword})`,'gi'),'<span class="highlight">$1</span>');}
 function filterAPIs(){
-  const searchText = searchInput.value.toLowerCase();
-  const activeCategory = document.querySelector('.filters button.active')?.dataset.category || 'all';
-  
-  apiItems.forEach(item => {
-    const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
-    const matchesSearch = item.innerText.toLowerCase().includes(searchText);
-    item.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
-
-    // Highlight search matches
-    const h3 = item.querySelector('h3');
-    const code = item.querySelector('code');
-    h3.innerHTML = highlightText(h3.textContent, searchText);
-    code.innerHTML = highlightText(code.textContent, searchText);
+  const searchText=searchInput.value.toLowerCase();
+  const activeCategory=document.querySelector('.filters button.active')?.dataset.category||'all';
+  apiItems.forEach(item=>{
+    const matchesCategory=activeCategory==='all'||item.dataset.category===activeCategory;
+    const matchesSearch=item.innerText.toLowerCase().includes(searchText);
+    item.style.display=(matchesCategory && matchesSearch)?'none':'none';
+    if(matchesCategory && matchesSearch) item.style.display='';
+    // Highlight
+    const h3=item.querySelector('h3');
+    const code=item.querySelector('code');
+    h3.innerHTML=highlightText(h3.textContent,searchText);
+    code.innerHTML=highlightText(code.textContent,searchText);
   });
 }
-
-searchInput.addEventListener('input', filterAPIs);
-
-filterButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterButtons.forEach(b => b.classList.remove('active'));
+searchInput.addEventListener('input',filterAPIs);
+filterButtons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    filterButtons.forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     filterAPIs();
   });
 });
+
+// Copy Endpoint
+function copyToClipboard(text){navigator.clipboard.writeText(text);alert('Copied: '+text);}
+
+// Scroll Top
+window.onscroll=function(){scrollTopBtn.style.display=(document.body.scrollTop>100||document.documentElement.scrollTop>100)?'block':'none';};
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 
 </body>
