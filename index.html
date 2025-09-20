@@ -1393,7 +1393,7 @@ createGauge(97.86);
 <script>
 async function loadUsage() {
   try {
-    const res = await fetch("/api/usage");
+    const res = await fetch("https://jerrycoder.oggyapi.workers.dev/api/usage");
     const data = await res.json();
 
     const usageList = document.getElementById("usage-list");
